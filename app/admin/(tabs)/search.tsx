@@ -1,9 +1,15 @@
 import { View, Text } from 'react-native';
+import SearchResult from '@/components/searchResult';
 
 export default function AdminSettings() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Admin Settings Screen</Text>
-    </View>
+    <SearchResult
+          title="Introduction to Algorithm"
+          authors={["Thomas H. Cormen", "Charles E. Leiserson", "Ronald L. Rivest", "Clifford Stein"]}
+          edition={"3rd"}
+          totalCopies={2}
+          availableCopies={3}
+          admin={true}
+        />
   );
 }

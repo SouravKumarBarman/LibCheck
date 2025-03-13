@@ -1,4 +1,4 @@
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
@@ -14,6 +14,7 @@ export default function AdminHome() {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Admin Home Screen</Text>
       <Button title="Sign Out" onPress={handleSignOut} />
+      <StatusBar barStyle={'light-content'} backgroundColor={"black"}/>
     </View>
   );
 }

@@ -1,6 +1,9 @@
-import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Button, StyleSheet, Pressable, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Link } from 'expo-router';
+import "@/global.css"
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function Index() {
   const router = useRouter();
@@ -11,19 +14,30 @@ export default function Index() {
   };
 
   return (
-    <View style={{ alignItems: 'center', marginTop: 20 }}>
+  <>
+  <StatusBar barStyle={'dark-content'}/>
+  <SafeAreaView style={{ alignItems: 'center', marginTop: 20 }}>
       <Text style={styles.title}>LibCheck</Text>
-      <Link href="/admin" asChild style={styles.button1}>
+
+
+    {/* Admin button */}
+      <Link href="/admin/signin" asChild style={styles.button1}>
         <Pressable>
           <Text style={{ fontSize: 38 , color: "white"}}>Admin</Text>
         </Pressable>
       </Link>
+
+
+    {/* User button */}
       <Link href="/user" asChild style={styles.button2}>
         <Pressable>
           <Text style={{ fontSize: 38 }}>User</Text>
         </Pressable>
       </Link>
-    </View>
+    </SafeAreaView>
+
+  </>
+    
   );
 }
 

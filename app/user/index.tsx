@@ -1,13 +1,23 @@
-import { Text, View, StyleSheet } from "react-native";
-import { Link } from "expo-router";
+import { Text, View, StyleSheet, ScrollView, StatusBar } from "react-native";
+import SearchResult from "@/components/searchResult";
 
 export default function Index() {
   return (
+    <ScrollView>
+      <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
+      <View style={styles.container}>
+        <Text style={styles.headline}>Welcome to{"\n"}<Text style={{ fontWeight: "bold" }}>JEC CSE</Text>{"\n"}Library</Text>
+        <SearchResult
+          title="Introduction to Algorithm"
+          authors={["Thomas H. Cormen", "Charles E. Leiserson", "Ronald L. Rivest", "Clifford Stein"]}
+          edition={"3rd"}
+          totalCopies={2}
+          availableCopies={3}
+          admin={false}
+        />
+      </View>
+    </ScrollView>
 
-
-    <View style={styles.container}>
-      <Text style={styles.headline}>Welcome to{"\n"}<Text style={{ fontWeight: "bold" }}>JEC CSE</Text>{"\n"}Library</Text>
-    </View>
   );
 }
 
@@ -21,8 +31,6 @@ const styles = StyleSheet.create({
   },
   headline: {
     textAlign: 'center',
-    fontSize: 40,
-    marginTop: 30,
+    fontSize: 40
   }
-
 });

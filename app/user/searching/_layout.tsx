@@ -7,10 +7,10 @@ export default function searchingLayout() {
                 backgroundColor: '#000000',
             },
             headerShadowVisible: false,
-            headerTintColor: '#fff'
+            headerTintColor: '#fff',
         }}>
             <Stack.Screen name="index" options={{ title: "Search" }} />
-            <Stack.Screen name="search" options={{ headerShown: false }} />
+            <Stack.Screen name="search" options={{ headerShown: false }}/>
         </Stack>
     )
 }

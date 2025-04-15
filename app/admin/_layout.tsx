@@ -1,34 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Slot, useRouter, useSegments } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ActivityIndicator, View } from 'react-native';
+import { Tabs } from 'expo-router';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function AdminLayout() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const segments = useSegments();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('adminToken');
-      setIsAuthenticated(!!token);
-      setLoading(false);
-      
-      if (!token && segments[1] !== 'signin') {
-        router.replace('/admin/signin');
-      }
-    };
-    checkAuth();
-  }, []);
-
-  if (loading) {
+export default function TabLayout() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+        <Tabs screenOptions={{
+            tabBarActiveTintColor: '#fff',
+            headerStyle: {
+                backgroundColor: '#000000',
 
-  return <Slot />;
+            },
+            headerShadowVisible: false,
+            headerTintColor: '#fff',
+            tabBarStyle: {
+                backgroundColor: '#000000',
+            }
+        }}>
+            <Tabs.Screen name="index" options={{
+                title: 'Add Books',
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons name={focused ? "home-sharp" : "home-outline"} color={color} size={24} />
+                )
+            }} />
+            <Tabs.Screen name="(tabs)/search" options={{
+                title: 'Search',
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons name={focused ? "search-sharp" : "search-outline"} color={color} size={24} />
+                )
+            }} />
+        </Tabs>
+    );
 }

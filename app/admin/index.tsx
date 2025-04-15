@@ -1,13 +1,14 @@
 import { View, Text, Button, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { useAuth } from "@/context/AuthContext";
+
 
 export default function AdminHome() {
-  const router = useRouter();
+  const {onLogout}=useAuth();
 
   const handleSignOut = async () => {
-    await AsyncStorage.removeItem('adminToken');
-    router.replace('/admin/signin');
+    await onLogout();
   };
 
   return (

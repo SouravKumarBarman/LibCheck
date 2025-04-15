@@ -1,10 +1,19 @@
-import { Text, View, StyleSheet, ScrollView, StatusBar } from "react-native";
+import { Text, View, StyleSheet, ScrollView, StatusBar, Pressable } from "react-native";
 import SearchResult from "@/components/searchResult";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Index() {
+  const { onLogout } = useAuth();
+
+  const handleLogout = async () => {
+    await onLogout();
+  }
   return (
     <ScrollView>
       <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
+      <Pressable onPress={handleLogout}>
+        <Text>Logout</Text>
+      </Pressable>
       <View style={styles.container}>
         <Text style={styles.headline}>Welcome to{"\n"}<Text style={{ fontWeight: "bold" }}>JEC CSE</Text>{"\n"}Library</Text>
         <SearchResult

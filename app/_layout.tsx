@@ -1,42 +1,44 @@
-import {Slot, Stack, useRouter } from "expo-router";
+import { Slot, Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useAuth } from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 
-export default function RootLayout() {
-  const [userRole, setUserRole] = useState("");
-  const [loading, setLoading] = useState(true);
+const AppLayout = () => {
+  const { authState } = useAuth();
+  const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
-    const checkUserRole = async () => {
-      const role = await AsyncStorage.getItem('userRole');
-      setUserRole(role);
-      setLoading(false);
-      if (role) {
-        router.replace(`/${role}`);
-      }
-    };
-    checkUserRole();
-  }, []);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+    if (authState?.authenticated === true && authState?.role === 'admin') {
+      router.replace('/admin');
+    } else if (authState?.authenticated === true && authState?.role === 'user') {
+      router.replace('/user');
+    }
+  }, [authState]);
 
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index"/>
-        <Stack.Screen name="admin" />
-        <Stack.Screen name="user" />
-      </Stack>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="adminSignin"/>
+      <Stack.Screen name="userSignin"/>
+      <Stack.Screen name="admin" />
+      <Stack.Screen name="user" />
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+
+  return (
+    <AuthProvider>
+      <SafeAreaProvider>
+        <AppLayout />
     </SafeAreaProvider>
+    </AuthProvider>
   );
 }

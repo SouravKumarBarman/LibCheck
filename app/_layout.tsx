@@ -13,7 +13,6 @@ const AppLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
-
     if (authState?.authenticated === true && authState?.role === 'admin') {
       router.replace('/admin');
     } else if (authState?.authenticated === true && authState?.role === 'user') {

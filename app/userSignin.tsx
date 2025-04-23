@@ -7,9 +7,7 @@ const UserSignin = () => {
   const { onUserLogin } = useAuth();
 
   const handleLogin = async () => {
-    // Handle login logic here
     await onUserLogin(email, password);
-    console.log('Login attempt with:', email, password)
   }
 
   return (

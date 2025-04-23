@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from '../components/LoadingScreen';
+import axios from "@/config/axiosConfig";
+import * as SecureStore from 'expo-secure-store';
 
 export enum Role {
     ADMIN = 'admin',
@@ -78,18 +80,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const adminLogin = async (username: string, password: string) => {
         try {
             setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
 
             if (!username || !password) {
                 throw new Error('Username and password are required');
             }
 
+            await axios.post('/auth/login', {
+                email: 'jeccse@gmail.com',
+                password: password
+            })
+                .then(async function (response) {
+                    console.log("Admin logged in successfully!!")
+                    const accessToken = response.data.accessToken
+                    const refreshToken = response.data.refreshToken
+                    await SecureStore.setItemAsync('accessToken', accessToken);
+                    await SecureStore.setItemAsync('refreshToken', refreshToken);
+                })
+
             // Admin validation logic
             // if (username !== 'admin' || password !== 'admin') {
             //     throw new Error('Invalid admin credentials');
             // }
+
+
 
             const newAuthState = {
                 authenticated: true,
@@ -113,9 +126,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const userLogin = async (username: string, password: string) => {
         try {
             setAuthState(prev => ({ ...prev, loading: true, error: null }));
-            
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
 
             if (!username || !password) {
                 throw new Error('Username and password are required');
@@ -125,7 +135,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             // if (username !== 'user' || password !== 'user') {
             //     throw new Error('Invalid user credentials');
             // }
-            console.log('logged in as user');
+
+            await axios.post('/auth/login', {
+                email: username,
+                password: password
+            })
+                .then(async function (response) {
+                    console.log("User logged in successfully!!")
+                    const accessToken = response.data.accessToken
+                    const refreshToken = response.data.refreshToken
+                    await SecureStore.setItemAsync('accessToken', accessToken);
+                    await SecureStore.setItemAsync('refreshToken', refreshToken);
+                })
 
             const newAuthState = {
                 authenticated: true,
@@ -150,6 +171,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
             setAuthState(prev => ({ ...prev, loading: true }));
             await AsyncStorage.removeItem('authState');
+            await SecureStore.deleteItemAsync('accessToken');
+            await SecureStore.deleteItemAsync('refreshToken');
+            console.log(authState.role + ' logged out successfully')
             setAuthState({
                 authenticated: false,
                 username: null,

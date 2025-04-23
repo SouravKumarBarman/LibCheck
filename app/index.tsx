@@ -2,10 +2,15 @@ import { View, Text, Button, StyleSheet, Pressable, StatusBar } from 'react-nati
 import { Link } from 'expo-router';
 import "@/global.css"
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
+
+
 
 
 export default function Index() {
 
+  axios.defaults.baseURL = 'http://localhost:5000';
+  
   return (
     <>
       <StatusBar barStyle={'dark-content'} />

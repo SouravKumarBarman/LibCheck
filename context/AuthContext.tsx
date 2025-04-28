@@ -130,11 +130,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (!username || !password) {
                 throw new Error('Username and password are required');
             }
-
+              if (username === 'admin') {
+                throw new Error('Invalid user credentials');
+            }
+            
             // User validation logic
             // if (username !== 'user' || password !== 'user') {
             //     throw new Error('Invalid user credentials');
             // }
+           
 
             await axios.post('/auth/login', {
                 email: username,

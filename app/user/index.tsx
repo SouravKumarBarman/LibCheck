@@ -1,12 +1,10 @@
 import { Text, View, StyleSheet, ScrollView, StatusBar, Pressable, RefreshControl } from "react-native";
 import SearchResult from "@/components/searchResult";
-import { useAuth } from "@/context/AuthContext";
 import axios from "@/config/axiosConfig";
 import { useEffect, useState, useCallback } from "react";
 import * as SecureStore from 'expo-secure-store';
 
 export default function Index() {
-  const { onLogout } = useAuth();
   const [wishlistItems, setWishlistItems] = useState([])
   const [refreshing, setRefreshing] = useState(false);
 
@@ -46,18 +44,13 @@ export default function Index() {
     }
   };
 
-
-
-  const handleLogout = async () => {
-    await onLogout();
-  }
-
   useEffect(() => {
     fetchWishlist()
   }, [])
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    fetchWishlist();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -68,12 +61,6 @@ export default function Index() {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       <StatusBar barStyle={"light-content"} backgroundColor={"black"} />
-      <Pressable onPress={handleLogout}>
-        <Text>Logout</Text>
-      </Pressable>
-      <Pressable onPress={fetchWishlist}>
-        <Text>Refresh</Text>
-      </Pressable>
       <View style={styles.container}>
         <Text style={styles.headline}>Welcome to{"\n"}<Text style={{ fontWeight: "bold" }}>JEC CSE</Text>{"\n"}Library</Text>
         {wishlistItems.map((wishlistItem) => (

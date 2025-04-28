@@ -1,17 +1,36 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, Platform } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
 import React, { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+
 const UserSignin = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { onUserLogin } = useAuth();
+  const [error, setError] = useState('')
+  const { onUserLogin } = useAuth()
 
   const handleLogin = async () => {
-    await onUserLogin(email, password);
+    setError('') // Clear previous errors
+    try {
+      const success = await onUserLogin(email, password)
+      if (!success) {
+        setError('Invalid email or password')
+      }
+    } catch (err) {
+      setError('Login failed. Please try again later.')
+    }
   }
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
@@ -26,6 +45,8 @@ const UserSignin = () => {
       <View style={styles.formContainer}>
         <Text style={styles.title}>Welcome Back</Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
+
+        {error !== '' && <Text style={styles.errorText}>{error}</Text>}
 
         <View style={styles.inputContainer}>
           <TextInput
@@ -84,7 +105,12 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 30,
+    marginBottom: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    fontSize: 14,
   },
   inputContainer: {
     marginBottom: 15,
@@ -98,39 +124,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#f9f9f9',
   },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 20,
-  },
-  forgotPasswordText: {
-    color: '#007AFF',
-    fontSize: 14,
-  },
   loginButton: {
     backgroundColor: '#007AFF',
     height: 50,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
+    marginTop: 10,
   },
   loginButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  signupText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  signupLink: {
-    color: '#007AFF',
-    fontSize: 14,
     fontWeight: 'bold',
   },
 })

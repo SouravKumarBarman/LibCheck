@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   FlatList,
+  Pressable,
 } from 'react-native';
 import React, { useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
@@ -54,15 +55,47 @@ const ReturnBook = () => {
     }
   };
 
+  const handleReturn = async (borrowid:{id:string}) => {
+    setLoading(true);
+    try {
+      const BEARER_TOKEN = await SecureStore.getItemAsync('accessToken');
+      console.log('Borrow ID:', borrowid.id);
+      const res = await axios.put(
+        `/borrow/return/${borrowid.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${BEARER_TOKEN}`,
+          },
+        }
+      );
+      if (res.status === 200) {
+        console.log('Book returned successfully');
+        alert('Book returned successfully');
+      }
+    } catch (error) {
+      console.error('Error returning book: ', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderItem = ({ item }: { item: SearchResultItem }) => (
-    <SearchResult
-      title={item.books.title}
-      authors={[item.books.author]}
-      edition="3rd"
-      totalCopies={2}
-      availableCopies={item.books.available_books}
-      admin={true}
-    />
+    <>
+      <SearchResult
+        title={item.books.title}
+        authors={[item.books.author]}
+        edition="3rd"
+        totalCopies={2}
+        availableCopies={item.books.available_books}
+        admin={true}
+      />
+      <Pressable onPress={() => handleReturn({ id: item.id })}>
+        <Text style={{ color: 'blue', textAlign: 'center' }}>
+          Return Book
+        </Text>
+      </Pressable>
+    </>
   );
 
   return (

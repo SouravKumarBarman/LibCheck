@@ -46,8 +46,10 @@ const ReturnBook = () => {
           },
         }
       );
-
-      setBooks(booksRes.data.borrow_records);
+      const filteredBooks = booksRes.data.borrow_records.filter(
+        (record: any) => record.returned === false
+      );
+      setBooks(filteredBooks);
     } catch (error) {
       console.error('Error fetching books: ', error);
     } finally {
@@ -55,7 +57,7 @@ const ReturnBook = () => {
     }
   };
 
-  const handleReturn = async (borrowid:{id:string}) => {
+  const handleReturn = async (borrowid: { id: string }) => {
     setLoading(true);
     try {
       const BEARER_TOKEN = await SecureStore.getItemAsync('accessToken');
@@ -75,6 +77,7 @@ const ReturnBook = () => {
       }
     } catch (error) {
       console.error('Error returning book: ', error);
+      alert('Error returning book');
     } finally {
       setLoading(false);
     }

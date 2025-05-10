@@ -1,7 +1,12 @@
 import { Tabs } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useAuth } from "@/context/AuthContext";
 
 export default function TabLayout() {
+    const { onLogout } = useAuth();
+    const handleSignOut = async () => {
+    await onLogout();
+  };
     return (
         <Tabs screenOptions={{
             tabBarActiveTintColor: '#fff',
@@ -19,6 +24,9 @@ export default function TabLayout() {
                 title: 'Add Books',
                 tabBarIcon: ({ color, focused }) => (
                     <Ionicons name={focused ? "home-sharp" : "home-outline"} color={color} size={24} />
+                ),
+                headerRight: () => (
+                    <Ionicons className='m-5' name="log-out-outline" size={24} color="white" onPress={handleSignOut}/>
                 )
             }} />
             <Tabs.Screen name="(tabs)/search" options={{

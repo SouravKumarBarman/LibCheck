@@ -1,11 +1,11 @@
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, StatusBar, Pressable, ActivityIndicator } from 'react-native';
-import { useAuth } from "@/context/AuthContext";
+
 import { useState } from 'react';
 import axios from '@/config/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
 
 export default function AdminHome() {
-  const { onLogout } = useAuth();
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookData, setBookData] = useState({
     title: '',
@@ -15,9 +15,7 @@ export default function AdminHome() {
     available_books: ''
   });
 
-  const handleSignOut = async () => {
-    await onLogout();
-  };
+  
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -117,9 +115,6 @@ export default function AdminHome() {
           ) : (
             <Text style={styles.buttonText}>Submit</Text>
           )}
-        </Pressable>
-        <Pressable style={styles.button} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>Sign Out</Text>
         </Pressable>
       </View>
       <StatusBar barStyle={'light-content'} backgroundColor={"black"} />

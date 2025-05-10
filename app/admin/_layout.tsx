@@ -27,6 +27,12 @@ export default function TabLayout() {
                     <Ionicons name={focused ? "search-sharp" : "search-outline"} color={color} size={24} />
                 )
             }} />
+            <Tabs.Screen name="returnBook" options={{
+                title: 'Return Book',
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons name={focused ? "search-sharp" : "search-outline"} color={color} size={24} />
+                )
+            }} />
         </Tabs>
     );
 }

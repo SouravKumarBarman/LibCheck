@@ -17,7 +17,7 @@ export default function AdminSignIn() {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Ionicons name="library" size={80} color="#4A90E2" />
+        <Ionicons name="library" size={80} color="#000" />
         <Text style={styles.title}>Admin Portal</Text>
         <Text style={styles.subtitle}>Library Management System</Text>
       </View>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   signInButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#000',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',

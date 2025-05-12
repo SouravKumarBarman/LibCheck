@@ -1,74 +1,124 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import { Image } from 'react-native'
-import books from '@/assets/images/icon.png'
-import { TouchableOpacity, TextInput } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, Text, Image, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import books from '@/assets/images/icon.png';
 
-type searchResultProps = {
-    title: string,
-    authors: string[],
-    edition: string,
-    image?: string,
-    totalCopies: number,
-    availableCopies: number,
-    admin: boolean
-}
+type SearchResultProps = {
+    title: string;
+    authors: string[];
+    edition?: string;
+    image?: string;
+    totalCopies?: number;
+    availableCopies: number;
+    isbn?: string;
+    createdAt?: string;
+};
 
-const SearchResult= ({title, authors, edition, image, totalCopies, availableCopies, admin}:searchResultProps) => {
-    const [count, setCount] = useState(3);
-    const minCount = 1;
-    const maxCount = 5;
+const formatDate = (isoDate?: string) => {
+    if (!isoDate) return '';
+    const date = new Date(isoDate);
+    return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
 
-    const decrement = () => {
-        if (count > minCount) setCount(count - 1);
-    };
-
-    const increment = () => {
-        if (count < maxCount) setCount(count + 1);
-    };
+const SearchResult = ({
+    title,
+    authors,
+    edition,
+    totalCopies,
+    availableCopies,
+    isbn,
+    createdAt,
+}: SearchResultProps) => {
 
     return (
-        <View>
-            <View className='flex flex-row justify-between ml-2 pl-2 py-5'>
-                <View className='flex-1'>
-                    <Text className='text-2xl font-bold'>{title}</Text>
-                    <Text>by</Text>
-                    {
-                        authors.map((author, index) => (
-                            <Text key={index} className='italic'>{author}</Text>
-                        ))
-                    }
-                    <Text className='text-zinc-500'>{edition} Edition</Text>
-                </View>
-                <View className='flex-1 items-center'>
-                    <Image source={books} className='w-40 h-48 rounded-lg border border-zinc-300' />
-                    <View className="relative flex flex-row items-center max-w-[8rem] border border-gray-300 rounded-lg bg-white mt-2">
-                        {admin && (
-                            <TouchableOpacity
-                            onPress={decrement}
-                            className="p-3 h-11 border-r border-gray-300"
-                            
-                        >
-                            <Text>+</Text>
-                        </TouchableOpacity>)}
-                        <TextInput
-                            className="text-center text-gray-900 font-medium text-lg flex-1 h-11 "
-                            value={availableCopies.toString()}
-                            editable={false}
-                        />
-                        {admin && (<TouchableOpacity
-                            onPress={increment}
-                            className="p-3 h-11 border-l border-gray-300"
-                        >
-                            <Text>-</Text>
-                        </TouchableOpacity>)}
-                    </View>
+        <View style={styles.card}>
+            <View style={styles.row}>
+                {/* <Image source={books} style={styles.image} resizeMode="cover" /> */}
+                <View style={styles.info}>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.subtitle}>by {authors.join(', ')}</Text>
+                    {edition && <Text style={styles.detail}>Edition: {edition}</Text>}
+                    {isbn && <Text style={styles.detail}>ISBN: {isbn}</Text>}
+                    {totalCopies && <Text style={styles.detail}>Total Copies: {totalCopies}</Text>}
+                    <Text style={styles.detail}>Available: {availableCopies}</Text>
+                    {createdAt && (
+                        <Text style={styles.detail}>
+                            Added: {formatDate(createdAt)}
+                        </Text>
+                    )}
                 </View>
             </View>
-            <View className='border-b mx-5 border-zinc-200' />
         </View>
-    )
-}
+    );
+};
 
-export default SearchResult
+const styles = StyleSheet.create({
+    card: {
+        backgroundColor: '#f9f9f9',
+        marginHorizontal: 2,
+        marginVertical: 5,
+        padding: 16,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+    },
+    row: {
+        flexDirection: 'row',
+    },
+    image: {
+        width: 80,
+        height: 110,
+        borderRadius: 8,
+        marginRight: 12,
+        borderColor: '#ccc',
+        borderWidth: 1,
+    },
+    info: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    subtitle: {
+        fontSize: 14,
+        fontStyle: 'italic',
+        marginBottom: 4,
+    },
+    detail: {
+        fontSize: 13,
+        color: '#555',
+        marginBottom: 2,
+    },
+    counterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 12,
+    },
+    counterButton: {
+        paddingVertical: 6,
+        paddingHorizontal: 16,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 6,
+        marginHorizontal: 5,
+    },
+    counterText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    counterInput: {
+        width: 40,
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+    },
+});
+
+export default SearchResult;

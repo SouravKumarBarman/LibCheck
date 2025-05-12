@@ -1,4 +1,4 @@
-import { TextInput, StyleSheet, Pressable, Text, View, ScrollView, ActivityIndicator } from 'react-native'
+import { TextInput, StyleSheet, Pressable, Text, View, ScrollView, ActivityIndicator, Alert } from 'react-native'
 import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -8,6 +8,7 @@ import axios from '@/config/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
 import SearchResult from '@/components/searchResult';
 import Modal from '@/components/Modal';
+import { Ionicons } from '@expo/vector-icons';
 
 interface SearchResultItem {
     id: string;
@@ -53,7 +54,7 @@ const search = () => {
     const handleLending = async ({ roll, dueDate, result }: { roll: string, dueDate: string, result: any }) => {
         try {
             console.log(roll, dueDate)
-            const book_id=result.id
+            const book_id = result.id
             const BEARER_TOKEN = await SecureStore.getItemAsync('accessToken');
             const student = await axios.get(`/students/rollno/${roll}`, {
                 headers: {
@@ -62,11 +63,11 @@ const search = () => {
             })
             console.log(student.data)
             const student_id = student.data.student_id
-            const res = await axios.post(`borrow/book`,{
+            const res = await axios.post(`borrow/book`, {
                 student_id: student_id,
                 book_id: book_id,
                 due_date: "2025-06-01"
-            } ,{
+            }, {
                 headers: {
                     Authorization: `Bearer ${BEARER_TOKEN}`
                 }
@@ -78,6 +79,33 @@ const search = () => {
         }
 
     }
+
+    const handleDelete = async (bookid: string) => {
+        try {
+            const BEARER_TOKEN = await SecureStore.getItemAsync('accessToken');
+            const res = await axios.delete(`/books/${bookid}`, {
+                headers: {
+                    Authorization: `Bearer ${BEARER_TOKEN}`
+                }
+            })
+            console.log(res.data)
+            setQueryResult((prev) => prev.filter((item) => item.id !== bookid))
+        } catch (error) {
+            console.log("Error deleting book", error)
+        }finally {
+            Alert.alert("Book deleted successfully")
+        }
+    }
+
+    const pressDelete = async (bookid: string) => {
+        Alert.alert('Caution', 'Are you sure?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'YES', onPress: () => handleDelete(bookid)},
+    ])}
 
 
     return (
@@ -115,22 +143,27 @@ const search = () => {
                             <SearchResult
                                 title={result.title}
                                 authors={[result.author]}
-                                edition={"3rd"}
-                                totalCopies={2}
                                 availableCopies={result.available_books}
-                                admin={false}
                             />
-                            <Pressable
-                                onPress={() => setModelOpen(true)}
+                            <View className='flex-row justify-between items-center'>
+                                <Pressable
+                                    onPress={() => {pressDelete(result.id)}}
+                                    style={styles.deleteButton}
+                                ><Ionicons name="trash-sharp" size={20}/></Pressable>
 
-                                style={styles.wishlistButton}
-                            >
-                                {addingToWishlist === result.id ? (
-                                    <ActivityIndicator size="small" color="#0000ff" />
-                                ) : (
-                                    <Text>Lend to Student</Text>
-                                )}
-                            </Pressable>
+                                <Pressable
+                                    onPress={() => setModelOpen(true)}
+
+                                    style={styles.wishlistButton}
+                                >
+                                    {addingToWishlist === result.id ? (
+                                        <ActivityIndicator size="small" color="#0000ff" />
+                                    ) : (
+                                        <Text>Lend to Student</Text>
+                                    )}
+                                </Pressable>
+                            </View>
+
                             <Modal
                                 isOpen={modelOpen}
                                 withInput
@@ -250,10 +283,21 @@ const styles = StyleSheet.create({
     wishlistButton: {
         marginTop: 8,
         padding: 8,
+        height: 36,
         backgroundColor: '#f0f0f0',
         borderRadius: 4,
         alignItems: 'center',
+        width: 180,
     },
+    deleteButton: {
+        marginTop: 8,
+        padding: 8,
+        height: 36,
+        backgroundColor: '#ff4d4d',
+        borderRadius: 4,
+        alignItems: 'center',
+        width: 180,
+    }
 })
 
 export default search

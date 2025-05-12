@@ -39,6 +39,12 @@ export default function TabLayout() {
                     <Ionicons name={focused ? "search-sharp" : "search-outline"} color={color} size={24} />
                 )
             }} />
+            <Tabs.Screen name="borrowRecord" options={{
+                title: 'Borrow Record',
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons name={focused ? "reader-sharp" : "reader-outline"} color={color} size={24} />
+                )
+            }} />
         </Tabs>
     );
 }

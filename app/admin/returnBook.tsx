@@ -88,15 +88,13 @@ const ReturnBook = () => {
       <SearchResult
         title={item.books.title}
         authors={[item.books.author]}
-        edition="3rd"
-        totalCopies={2}
         availableCopies={item.books.available_books}
-        admin={true}
       />
-      <Pressable onPress={() => handleReturn({ id: item.id })}>
-        <Text style={{ color: 'blue', textAlign: 'center' }}>
-          Return Book
-        </Text>
+      <Pressable
+        style={styles.returnButton}
+        onPress={() => handleReturn({ id: item.id })}
+      >
+        <Text style={styles.returnButtonText}>Return Book</Text>
       </Pressable>
     </>
   );
@@ -152,6 +150,25 @@ const styles = StyleSheet.create({
     color: 'gray',
     textAlign: 'center',
     marginTop: 20,
+  },
+  returnButton: {
+    marginBottom: 10,
+    backgroundColor: '#000', // Green background
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3, // For Android shadow
+  },
+  returnButtonText: {
+    color: '#fff', // White text
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 

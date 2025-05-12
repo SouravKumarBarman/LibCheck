@@ -13,6 +13,7 @@ interface SearchResultItem {
     title: string;
     author: string;
     available_books: number;
+    total_books: number;
 }
 
 const search = () => {
@@ -100,10 +101,8 @@ const search = () => {
                             <SearchResult
                                 title={result.title}
                                 authors={[result.author]}
-                                edition={"3rd"}
-                                totalCopies={2}
+                                totalCopies={result.total_books}
                                 availableCopies={result.available_books}
-                                admin={false}
                             />
                             <Pressable 
                                 onPress={() => addToWishlist(result.id)}

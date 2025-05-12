@@ -38,7 +38,7 @@ export default function TabLayout() {
             <Tabs.Screen name="returnBook" options={{
                 title: 'Return Book',
                 tabBarIcon: ({ color, focused }) => (
-                    <Ionicons name={focused ? "search-sharp" : "search-outline"} color={color} size={24} />
+                    <Ionicons name={focused ? "receipt-sharp" : "receipt-outline"} color={color} size={24} />
                 )
             }} />
         </Tabs>

@@ -41,6 +41,12 @@ export default function TabLayout() {
                     <Ionicons name={focused ? "receipt-sharp" : "receipt-outline"} color={color} size={24} />
                 )
             }} />
+            <Tabs.Screen name="scanIsbn" options={{
+                title: 'Scan ISBN',
+                tabBarIcon: ({ color, focused }) => (
+                    <Ionicons name={focused ? "barcode-sharp" : "barcode-outline"} color={color} size={24} />
+                )
+            }} />
         </Tabs>
     );
 }

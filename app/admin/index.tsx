@@ -1,11 +1,12 @@
 import { View, Text, TextInput, Button, StyleSheet, ScrollView, StatusBar, Pressable, ActivityIndicator } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from '@/config/axiosConfig';
 import * as SecureStore from 'expo-secure-store';
 
 export default function AdminHome() {
-  
+  const params = useLocalSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookData, setBookData] = useState({
     title: '',
@@ -15,7 +16,17 @@ export default function AdminHome() {
     available_books: ''
   });
 
-  
+  // Pre-fill form if params are present
+  useEffect(() => {
+    if (params && (params.title || params.author || params.isbn)) {
+      setBookData(prev => ({
+        ...prev,
+        title: params.title ? String(params.title) : '',
+        author: params.author ? String(params.author) : '',
+        isbn: params.isbn ? String(params.isbn) : '',
+      }));
+    }
+  }, [params.title, params.author, params.isbn]);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);

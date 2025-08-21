@@ -1,6 +1,9 @@
 import { CameraView, useCameraPermissions, BarcodeScanningResult, BarcodeType } from 'expo-camera';
-import { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Dimensions } from 'react-native';
+import { useState } from 'react';
+import { Button, StyleSheet, Text, View, Dimensions, Alert } from 'react-native';
+import axios from '@/config/axiosConfig';
+import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('window');
 const SCANNER_SIZE = width * 0.7; // Adjust as needed, e.g., 70% of screen width
@@ -8,6 +11,7 @@ const SCANNER_SIZE = width * 0.7; // Adjust as needed, e.g., 70% of screen width
 export default function BarcodeScannerScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
+  const router = useRouter();
 
   if (!permission) {
     return <View />;
@@ -22,10 +26,33 @@ export default function BarcodeScannerScreen() {
     );
   }
 
-  const handleBarcodeScanned = ({ type, data }: BarcodeScanningResult) => {
+  const handleBarcodeScanned = async ({ type, data }: BarcodeScanningResult) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-    // Process the scanned data here
+    try {
+      // Show loading alert
+      const BEARER_TOKEN = await SecureStore.getItemAsync('accessToken');
+      Alert.alert('Scanning...', `Fetching book data for ISBN: ${data}`);
+      const response = await axios.get(`/books/isbn/${data}`,
+        {
+          headers: {
+            Authorization: `Bearer ${BEARER_TOKEN}`
+          }
+        }
+      );
+      const book = response.data;
+      // Navigate to admin index page with book data
+      router.push({
+        pathname: '/admin',
+        params: {
+          title: book.title || '',
+          author: book.authors ? book.authors.join(', ') : '',
+          isbn: data,
+          publishedDate: book.publishedDate || '',
+        },
+      });
+    } catch (error) {
+      Alert.alert('Error', 'Failed to fetch book data.');
+    }
   };
 
   return (
@@ -35,9 +62,9 @@ export default function BarcodeScannerScreen() {
         onBarcodeScanned={scanned ? undefined : handleBarcodeScanned}
         barcodeScannerSettings={{
           barcodeTypes: [
-              "qr",
-              "ean13",
-              "code128",
+            "qr",
+            "ean13",
+            "code128",
           ],
         }}
       />
